@@ -41,8 +41,7 @@ public class MigrationPassword implements CommandLineRunner {
             String currentPassword = usuario.getPassword();
 
             // Si no está encriptada, la encriptamos y guardamos
-            if (!passwordService.isBCryptHash(currentPassword) && 
-                    !passwordService.isDefaultPassword(currentPassword)) {
+            if (!passwordService.isBCryptHash(currentPassword)) {
                 String newPassword = passwordService.encodePassword(currentPassword);
                 usuario.setPassword(newPassword);
                 usuarioRepository.save(usuario);

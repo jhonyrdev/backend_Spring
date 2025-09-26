@@ -20,20 +20,30 @@ import java.util.Optional;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    private final PasswordService passwordService;
+    
+    public UsuarioService(UsuarioRepository usuarioRepository,
+    PasswordService passwordService) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordService = passwordService;
     }
 
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
     }
 
+    public Optional<Usuario> findByEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+    
     public Optional<Usuario> findById(Integer id) {
         return usuarioRepository.findById(id);
     }
 
     public Usuario save(Usuario usuario) {
+        String rawPassword = usuario.getPassword();
+        String finalPassword = passwordService.encodePasswordIfNeeded(rawPassword);
+        usuario.setPassword(finalPassword);
         return usuarioRepository.save(usuario);
     }
 

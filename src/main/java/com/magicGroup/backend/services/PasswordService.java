@@ -27,9 +27,6 @@ public class PasswordService {
         if (rawPassword == null) {
             throw new IllegalArgumentException("Password no puede ser null");
         }
-        if (isDefaultPassword(rawPassword)) {
-            return rawPassword;
-        }
         if (isBCryptHash(rawPassword)) {
             return rawPassword;
         }
@@ -41,13 +38,14 @@ public class PasswordService {
         return passwordEncoder.encode(rawPassword);
     }
 
-    public boolean isDefaultPassword(String password) {
-        return "default".equalsIgnoreCase(password.trim());
-    }
-
     public boolean isBCryptHash(String password) {
         return password.startsWith("$2a$") || 
                 password.startsWith("$2b$") || 
                 password.startsWith("$2y$");
+    }
+    
+    // Método de Comparacion de contraseña
+    public boolean matches(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }
