@@ -34,7 +34,6 @@ public class UsuarioController {
 
     @PostMapping("/register")
     public Usuario register(@RequestBody Usuario usuario) {
-        // fuerza el nombre a "cliente" al registrarse
         usuario.setNombre("cliente");
         return usuarioService.save(usuario);
     }
@@ -45,20 +44,27 @@ public class UsuarioController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Usuario loginRequest) {
-        Optional<Usuario> user = usuarioService.findByEmail(loginRequest.getEmail());
+public ResponseEntity<?> login(@RequestBody Usuario loginRequest) {
+    Optional<Usuario> user = 
+            usuarioService.findByEmail(loginRequest.getEmail());
 
-        if (user.isPresent() &&
-            passwordService.matches(loginRequest.getPassword(), user.get().getPassword())) {
+    if (user.isPresent() &&
+        passwordService.matches(loginRequest.getPassword(), 
+                user.get().getPassword())) {
 
-            Usuario loggedUser = user.get();
-            loggedUser.setPassword(null);
-            return ResponseEntity.ok(loggedUser);
-
-        } else {
-            return ResponseEntity.status(401).body("Credenciales inválidas");
+        if ("RichardR@gmail.com".equalsIgnoreCase(user.get().getEmail())) {
+            return ResponseEntity.status(403).body(
+                    "El administrador no puede acceder desde login normal");
         }
+
+        Usuario loggedUser = user.get();
+        loggedUser.setPassword(null);
+        return ResponseEntity.ok(loggedUser);
+
+    } else {
+        return ResponseEntity.status(401).body("Credenciales inválidas");
     }
+}
     
     @PostMapping("/admin/verify")
 public ResponseEntity<?> verifyAdmin(@RequestBody Map<String, String> body) {
@@ -66,7 +72,8 @@ public ResponseEntity<?> verifyAdmin(@RequestBody Map<String, String> body) {
 
     Optional<Usuario> admin = usuarioService.findByEmail("RichardR@gmail.com");
 
-    if (admin.isPresent() && passwordService.matches(password, admin.get().getPassword())) {
+    if (admin.isPresent() && 
+            passwordService.matches(password, admin.get().getPassword())) {
         return ResponseEntity.ok("Acceso permitido");
     } else {
         return ResponseEntity.status(401).body("Contraseña incorrecta");
