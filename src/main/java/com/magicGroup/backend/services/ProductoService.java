@@ -6,7 +6,9 @@
 package com.magicGroup.backend.services;
 
 import com.magicGroup.backend.model.Producto;
+import com.magicGroup.backend.model.Categoria;
 import com.magicGroup.backend.repository.ProductoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,13 +36,16 @@ public class ProductoService {
         return productoRepository.findById(id);
     }
 
-    public Producto save(Producto producto) {
-        return productoRepository.save(producto);
+    public List<Producto> findByNombre(String nombre) {
+        return productoRepository.findByNombreContainingIgnoreCase(nombre);
     }
 
-    public Producto update(Integer id, Producto productoActualizado) {
-        productoActualizado.setId(id);
-        return productoRepository.save(productoActualizado);
+    public List<Producto> findByCategoria(Categoria categoria) {
+        return productoRepository.findByCategoria(categoria);
+    }
+
+    public Producto save(Producto producto) {
+        return productoRepository.save(producto);
     }
 
     public void deleteById(Integer id) {

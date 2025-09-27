@@ -8,6 +8,7 @@ package com.magicGroup.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 /**
  *
@@ -29,4 +30,10 @@ public class Producto {
     private BigDecimal precio;
 
     private Integer stock;
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id", nullable = false)
+    //@JsonManagedReference 
+    private Categoria categoria;
+
 }
